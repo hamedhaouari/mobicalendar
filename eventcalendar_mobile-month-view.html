@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+
+    <script>
+        // Ignore this in your implementation
+        window.isMbscDemo = true;
+    </script>
+
+    <title>Mobile month view</title>
+
+    <!-- Mobiscroll JS and CSS Includes -->
+    <link rel="stylesheet" href="css/mobiscroll.javascript.min.css">
+    <script src="js/mobiscroll.javascript.min.js"></script>
+
+    <style type="text/css">
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    body,
+    html {
+        height: 100%;
+    }
+
+    .demo-mobile-month-view {
+        height: 100%;
+    }
+.md-switching-view-cont {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    height: 100%;
+}
+
+.md-switching-view-cal-cont {
+    -webkit-flex: 1 0 auto;
+    -ms-flex: 1 0 auto;
+    flex: 1 0 auto;
+}
+
+
+    </style>
+
+</head>
+<body>
+
+
+
+<div class="md-switching-view-cont">
+    <div mbsc-form>
+        <label>
+            Month
+            <input mbsc-segmented type="radio" name="view" value="month" class="md-view-change" >
+        </label>
+        <label>
+            Week
+            <input mbsc-segmented type="radio" name="view" value="week" class="md-view-change" checked>
+        </label>
+        <label>
+            Day
+            <input mbsc-segmented type="radio" name="view" value="day" class="md-view-change">
+        </label>
+    </div>
+    <div class="md-switching-view-cal-cont">
+        <div id="demo-day-week-month"></div>
+    </div>
+</div>
+
+<script>
+mobiscroll.settings = {
+    theme: 'ios',
+    themeVariant: 'light'
+   
+};
+
+var now = new Date(),
+    calendar = mobiscroll.eventcalendar('#demo-day-week-month', {
+        display: 'inline',
+ 	
+        view: {
+            calendar: { type: 'week' },
+            eventList: { type: 'week', scrollable: true }
+        },
+        onInit: function (event, inst) {
+            mobiscroll.util.getJson('https://trial.mobiscroll.com/events/', function (events) {
+                inst.setEvents(events);
+            }, 'jsonp');
+        }
+    });
+
+document.querySelectorAll('.md-view-change').forEach(function (elm) {
+    elm.addEventListener('change', function (ev) {
+        switch (ev.target.value) {
+            case 'month':
+                calendar.option({
+			calendarHeight: 513,
+                    view: {
+                        calendar: { type: 'month' ,labels: true,
+                popover: true},
+                       
+                    }
+                })
+                break;
+            case 'week':
+                calendar.option({
+ 		calendarHeight: 0,
+                    view: {
+                        calendar: { type: 'week' },
+                        eventList: { type: 'week', scrollable: true }
+                    }
+                })
+                break;
+            case 'day':
+                calendar.option({
+                    view: {
+                        eventList: { type: 'day', scrollable: true }
+                    }
+                })
+                break;
+        }
+    });
+});
+</script>
+
+
+
+
+</body>
+</html>
